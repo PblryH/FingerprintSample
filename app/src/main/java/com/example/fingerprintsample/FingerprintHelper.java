@@ -13,6 +13,8 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 
+import timber.log.Timber;
+
 
 /**
  * Created by hzlinxuanxuan on 2016/9/12.
@@ -100,6 +102,7 @@ public class FingerprintHelper extends FingerprintManager.AuthenticationCallback
 
     @Override
     public void onAuthenticationSucceeded(FingerprintManager.AuthenticationResult result) {
+        Timber.d("onAuthenticationSucceeded()");
         if (callback == null) {
             return;
         }
@@ -142,6 +145,7 @@ public class FingerprintHelper extends FingerprintManager.AuthenticationCallback
 
     @Override
     public void onAuthenticationError(int errorCode, CharSequence errString) {
+        Timber.d("onAuthenticationError()");
         if (callback != null) {
             callback.onAuthenticationFail();
         }
@@ -149,10 +153,12 @@ public class FingerprintHelper extends FingerprintManager.AuthenticationCallback
 
     @Override
     public void onAuthenticationHelp(int helpCode, CharSequence helpString) {
+        Timber.d("onAuthenticationHelp()");
     }
 
     @Override
     public void onAuthenticationFailed() {
+        Timber.d("onAuthenticationFailed()");
     }
 
     public interface SimpleAuthenticationCallback {

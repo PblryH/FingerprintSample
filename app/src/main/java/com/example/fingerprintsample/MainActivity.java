@@ -7,11 +7,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import timber.log.Timber;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,FingerprintHelper.SimpleAuthenticationCallback {
 
     private Button encrypt, decrypt;
     private TextView tv;
     private FingerprintHelper helper;
+    private boolean mIsFingerprintAuthenticationOnGoing = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,18 +31,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tv.setText("Result");
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mIsFingerprintAuthenticationOnGoing) {
+            helper.setCallback(this);
+            helper.authenticate();
+        }
+    }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        helper.stopAuthenticate();
+    }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.encrypt:
                 helper.setPurpose(KeyProperties.PURPOSE_ENCRYPT);
                 tv.setText("set finger......");
-                helper.authenticate();
+                mIsFingerprintAuthenticationOnGoing = helper.authenticate();
+                Timber.d("encrypt mIsFingerprintAuthenticationOnGoing = %s",mIsFingerprintAuthenticationOnGoing);
                 break;
             case R.id.decrypt:
                 helper.setPurpose(KeyProperties.PURPOSE_DECRYPT);
                 tv.setText("set finger......");
-                helper.authenticate();
+                mIsFingerprintAuthenticationOnGoing = helper.authenticate();
+                Timber.d("decrypt mIsFingerprintAuthenticationOnGoing = %s",mIsFingerprintAuthenticationOnGoing);
                 break;
         }
     }
@@ -47,10 +69,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onAuthenticationSucceeded(String value) {
         tv.setText(value);
+        mIsFingerprintAuthenticationOnGoing = false;
+        Timber.d("onAuthenticationSucceeded mIsFingerprintAuthenticationOnGoing = %s",mIsFingerprintAuthenticationOnGoing);
     }
 
     @Override
     public void onAuthenticationFail() {
         tv.setText("onAuthenticationFail");
+        mIsFingerprintAuthenticationOnGoing = false;
+        Timber.d("onAuthenticationFail mIsFingerprintAuthenticationOnGoing = %s",mIsFingerprintAuthenticationOnGoing);
     }
 }
