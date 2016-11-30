@@ -16,7 +16,7 @@ import javax.crypto.spec.IvParameterSpec;
 public class LocalAndroidKeyStore {
 
     private KeyStore mStore;
-    public static final String keyName = "key";
+    public static final String keyName = "pinKey";
 
     LocalAndroidKeyStore() {
         try {
@@ -27,7 +27,6 @@ public class LocalAndroidKeyStore {
     }
 
     void generateKey(String keyAlias) {
-        //这里使用AES + CBC + PADDING_PKCS7，并且需要用户验证方能取出
         try {
             final KeyGenerator generator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore");
             mStore.load(null);
@@ -66,9 +65,8 @@ public class LocalAndroidKeyStore {
 
     public boolean isKeyProtectedEnforcedBySecureHardware() {
         try {
-            //这里随便生成一个key，检查是不是受保护即可
-            generateKey("temp");
-            final SecretKey key = (SecretKey) mStore.getKey("temp", null);
+            generateKey("pinEncoded");
+            final SecretKey key = (SecretKey) mStore.getKey("pinEncoded", null);
             if (key == null) {
                 return false;
             }

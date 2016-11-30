@@ -1,5 +1,6 @@
 package com.example.fingerprintsample;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.CancellationSignal;
@@ -23,7 +24,7 @@ public class FingerprintHelper extends FingerprintManager.AuthenticationCallback
     private SimpleAuthenticationCallback callback;
     private LocalSharedPreference mLocalSharedPreference;
     private LocalAndroidKeyStore mLocalAndroidKeyStore;
-    //PURPOSE_ENCRYPT,则表示生成token，否则为取出token
+
     private int purpose = KeyProperties.PURPOSE_ENCRYPT;
     private String data = "123456";
 
@@ -34,7 +35,6 @@ public class FingerprintHelper extends FingerprintManager.AuthenticationCallback
     }
 
     public void generateKey() {
-        //在keystore中生成加密密钥
         mLocalAndroidKeyStore.generateKey(LocalAndroidKeyStore.keyName);
         setPurpose(KeyProperties.PURPOSE_ENCRYPT);
     }
@@ -43,19 +43,15 @@ public class FingerprintHelper extends FingerprintManager.AuthenticationCallback
         return mLocalAndroidKeyStore.isKeyProtectedEnforcedBySecureHardware();
     }
 
-    /**
-     *
-     * @param ctx
-     * @return 0 支持指纹但是没有录入指纹； 1：有可用指纹； -1，手机不支持指纹
-     */
+
     public int checkFingerprintAvailable(Context ctx) {
         if (!isKeyProtectedEnforcedBySecureHardware()) {
             return -1;
         } else if (!manager.isHardwareDetected()) {
-            Toast.makeText(ctx, "该设备尚未检测到指纹硬件",Toast.LENGTH_SHORT).show();
+            Toast.makeText(ctx, "!manager.isHardwareDetected()",Toast.LENGTH_SHORT).show();
             return -1;
         } else if (!manager.hasEnrolledFingerprints()) {
-            Toast.makeText(ctx, "该设备未录入指纹，请去系统->设置中添加指纹",Toast.LENGTH_SHORT).show();
+            Toast.makeText(ctx, "!manager.hasEnrolledFingerprints()",Toast.LENGTH_SHORT).show();
             return 0;
         }
         return 1;
@@ -113,7 +109,6 @@ public class FingerprintHelper extends FingerprintManager.AuthenticationCallback
         }
         final Cipher cipher = result.getCryptoObject().getCipher();
         if (purpose == KeyProperties.PURPOSE_DECRYPT) {
-            //取出secret key并返回
             String data = mLocalSharedPreference.getData(mLocalSharedPreference.dataKeyName);
             if (TextUtils.isEmpty(data)) {
                 callback.onAuthenticationFail();
@@ -127,7 +122,6 @@ public class FingerprintHelper extends FingerprintManager.AuthenticationCallback
                 callback.onAuthenticationFail();
             }
         } else {
-            //将前面生成的data包装成secret key，存入沙盒
             try {
                 byte[] encrypted = cipher.doFinal(data.getBytes());
                 byte[] IV = cipher.getIV();

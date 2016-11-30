@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         helper = new FingerprintHelper(this);
         helper.setCallback(this);
         helper.generateKey();
-        tv.setText("已生成Key");
+        tv.setText("Result");
     }
 
     @Override
@@ -33,12 +33,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (view.getId()) {
             case R.id.encrypt:
                 helper.setPurpose(KeyProperties.PURPOSE_ENCRYPT);
-                tv.setText("开始验证指纹......");
+                tv.setText("set finger......");
                 helper.authenticate();
                 break;
             case R.id.decrypt:
                 helper.setPurpose(KeyProperties.PURPOSE_DECRYPT);
-                tv.setText("开始验证指纹......");
+                tv.setText("set finger......");
                 helper.authenticate();
                 break;
         }
@@ -51,6 +51,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onAuthenticationFail() {
-        tv.setText("验证失败");
+        tv.setText("onAuthenticationFail");
     }
 }

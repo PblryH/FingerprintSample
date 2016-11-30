@@ -16,7 +16,6 @@ public class LocalSharedPreference {
     }
 
     String getData(String keyName) {
-        //同样，在读取SharedPreferences数据前要实例化出一个SharedPreferences对象
         return preferences.getString(keyName, "");
     }
 

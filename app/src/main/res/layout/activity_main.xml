@@ -15,13 +15,13 @@
         android:id="@+id/encrypt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="指纹验证加密"/>
+        android:text="encrypt"/>
 
     <Button
         android:id="@+id/decrypt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="指纹验证解密"/>
+        android:text="decrypt"/>
 
     <TextView
         android:id="@+id/tv"
